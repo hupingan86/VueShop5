@@ -2,7 +2,7 @@ from rest_framework import serializers
 from goods.models import Goods, GoodsCategory, GoodsImage
 
 
-class CategorySerizlizer3(serializers.ModelSerializer):
+class CategorySerializer3(serializers.ModelSerializer):
     """
         商品类别序列化，第三类
     """
@@ -11,22 +11,22 @@ class CategorySerizlizer3(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class CategorySerizlizer2(serializers.ModelSerializer):
+class CategorySerializer2(serializers.ModelSerializer):
     """
         商品类别序列化，第二类
     """
-    sub_cat = CategorySerizlizer3(many=True)
+    sub_cat = CategorySerializer3(many=True)
 
     class Meta:
         model = GoodsCategory
         fields = "__all__"
 
 
-class CategorySerizlizer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     """
         商品类别序列化 ,第一类
     """
-    sub_cat = CategorySerizlizer2(many=True)
+    sub_cat = CategorySerializer2(many=True)
 
     class Meta:
         model = GoodsCategory
@@ -40,7 +40,7 @@ class GoodsImageSerializer(serializers.ModelSerializer):
 
 
 class GoodsSerializer(serializers.ModelSerializer):
-    category = CategorySerizlizer()
+    category = CategorySerializer()
     images = GoodsImageSerializer(many=True)
 
     class Meta:

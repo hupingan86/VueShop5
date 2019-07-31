@@ -12,7 +12,7 @@ from rest_framework import filters
 
 from .models import Goods, GoodsCategory
 from .filters import GoodsFilter
-from .serializers import GoodsSerializer, CategorySerizlizer
+from .serializers import GoodsSerializer, CategorySerializer
 # Create your views here.
 
 
@@ -43,4 +43,4 @@ class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
         商品分类列表数据
     """
     queryset = GoodsCategory.objects.filter(category_type=1)
-    serializer_class = CategorySerizlizer
+    serializer_class = CategorySerializer
