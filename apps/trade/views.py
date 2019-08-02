@@ -12,6 +12,8 @@ from .models import ShoppingCart, OrderInfo, OrderGoods
 from utils.alipay import AliPay
 from VueShop.settings import private_key_path,ali_pub_key_path
 from datetime import datetime
+
+from django.shortcuts import redirect
 from django.shortcuts import render
 
 # Create your views here.
@@ -117,7 +119,13 @@ class AliPayView(APIView):
                 existed_order.pay_time = datetime.now()
                 existed_order.save()
 
-            return Response("success")
+            # return Response("success")
+            response = redirect("index")
+            response.set_cookie("nextPath", "pay", max_age=2)
+            return response
+        else:
+            response = redirect("index")
+            return response
 
     def post(self, request):
         """

@@ -24,10 +24,13 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
 from rest_framework_jwt.views import obtain_jwt_token
 
-from goods.views import GoodsListViewSet, CategoryViewSet
+from goods.views import GoodsListViewSet, CategoryViewSet, HotSearchViewSet, BannerViewSet, IndexCategoryViewSet
 from users.views import SmsCodeViewSet, UserViewSet
 from user_operation.views import UserFavViewSet, LeavingMessageViewSet, AddressViewSet
 from trade.views import ShoppingCartViewSet, OrderViewSet, AliPayView
+
+from django.views.generic import TemplateView
+
 router = DefaultRouter()
 
 # 配置goods的url
@@ -54,6 +57,16 @@ router.register(r'shopcarts', ShoppingCartViewSet, base_name="shopcarts")
 
 # 订单相关url
 router.register(r'orders', OrderViewSet, base_name="orders")
+
+# 热搜url
+router.register(r'hotsearchs', HotSearchViewSet, base_name="hotsearchs")
+
+# 轮播图url
+router.register(r'banners', BannerViewSet, base_name="banners")
+
+# 首页分类商品url
+router.register(r'indexgoods', IndexCategoryViewSet, base_name="indexgoods")
+
 # good_list = GoodsListViewSet.as_view({
 #     'get': 'list',
 #     # 'post': 'create'
@@ -66,6 +79,9 @@ urlpatterns = [
     # url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
     re_path(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
     re_path('^', include(router.urls)),
+
+    re_path('^index/', TemplateView.as_view(template_name="index.html"), name="index"),
+
     path('docs/', include_docs_urls(title="六月生鲜")),
 
     # drf自带的token认证模式

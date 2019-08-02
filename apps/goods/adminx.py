@@ -12,7 +12,7 @@
 @time: 2017/7/4 17:04
 """
 import xadmin
-from .models import Goods, GoodsCategory, GoodsImage, GoodsCategoryBrand, Banner
+from .models import Goods, GoodsCategory, GoodsImage, GoodsCategoryBrand, Banner, IndexAd, HotSearchWords
 
 
 class GoodsAdmin(object):
@@ -66,6 +66,6 @@ xadmin.site.register(GoodsCategory, GoodsCategoryAdmin)
 xadmin.site.register(Banner, BannerGoodsAdmin)
 xadmin.site.register(GoodsCategoryBrand, GoodsBrandAdmin)
 
-# xadmin.site.register(HotSearchWords, HotSearchAdmin)
-# xadmin.site.register(IndexAd, IndexAdAdmin)
+xadmin.site.register(HotSearchWords, HotSearchAdmin)
+xadmin.site.register(IndexAd, IndexAdAdmin)
 
