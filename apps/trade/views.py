@@ -35,6 +35,30 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     lookup_field = "goods_id"
     # queryset = ShoppingCart.objects.all()
 
+    # 商品库存数量修改
+    def perform_create(self, serializer):
+        shop_cart = serializer.save()
+        goods = shop_cart.goods
+        goods.goods_num -= shop_cart.nums
+        goods.save()
+
+    # 库存数增加
+    def perform_destroy(self, instance):
+        goods = instance.goods
+        goods.goods_num += instance.nums
+        goods.save()
+        instance.delete()
+
+    # 修改购物车数量
+    def perform_update(self, serializer):
+        existed_record = ShoppingCart.objects.get(id=serializer.instance.id)
+        existed_nums = existed_record.nums
+        saved_record = serializer.save()
+        nums = saved_record.nums-existed_nums
+        goods = saved_record.goods
+        goods.goods_num -= nums
+        goods.save()
+
     # 购物车列表详情
     def get_serializer_class(self):
         if self.action == 'list':
@@ -62,7 +86,7 @@ class OrderViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.Retrie
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return OrderInfo.objects.filter(user=self.request.user)
+        return OrderInfo.objects.filter(user=self.request.user).order_by("-add_time")
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -114,6 +138,12 @@ class AliPayView(APIView):
 
             existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
             for existed_order in existed_orders:
+                order_goods = existed_order.goods.all()
+                for order_good in order_goods:
+                    goods = order_good.goods
+                    goods.sold_num += order_good.goods_num
+                    goods.save()
+
                 existed_order.pay_status = trade_status
                 existed_order.trade_no = trade_no
                 existed_order.pay_time = datetime.now()

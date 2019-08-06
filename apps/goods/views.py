@@ -9,10 +9,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 from .models import Goods, GoodsCategory, Banner, HotSearchWords
 from .filters import GoodsFilter
 from .serializers import GoodsSerializer, CategorySerializer, HotWordsSerializer, BannerSerializer, IndexCategorySerializer
+
+from rest_framework_extensions.cache.mixins import CacheResponseMixin
 # Create your views here.
 
 
@@ -23,10 +26,12 @@ class GoodsPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class GoodsListViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+# CacheResponseMixin 设置缓存
+class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     商品列表页,分页，搜索，过滤，排序
     """
+    throttle_classes = (UserRateThrottle, AnonRateThrottle)
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializer
     pagination_class = GoodsPagination
